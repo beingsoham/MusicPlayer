@@ -145,6 +145,31 @@ body {
     #close-sidebar-btn {
         display: block;
     }
+
+    .song-grid {
+        /* Ensure at least 2 columns on most phones */
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 16px;
+    }
+
+    /* --- Player Bar Mobile Adjustments --- */
+    .player-container {
+        padding: 12px 15px;
+    }
+
+    .song-info {
+        width: 60%; /* Give more space to song info */
+        min-width: 0; /* Remove desktop min-width */
+    }
+
+    .player-controls {
+        width: 40%; /* Adjust width */
+        justify-content: flex-end; /* Push controls to the right */
+    }
+
+    .volume-container {
+        display: none; /* Hide volume slider on mobile */
+    }
 }
 
 .player-container {
