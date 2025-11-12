@@ -288,3 +288,29 @@ loopBtn.addEventListener('click', () => {
         loopBtn.style.color = '#b3b3b3'; // Default color
     }
 });
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    // Don't trigger shortcuts if user is typing in the search bar
+    if (e.target === searchInput) {
+        return;
+    }
+
+    switch (e.key) {
+        case ' ': // Spacebar for Play/Pause
+            e.preventDefault(); // Prevent page from scrolling
+            const isPlaying = musicContainer.classList.contains('play');
+            if (isPlaying) {
+                pauseSong();
+            } else {
+                playSong();
+            }
+            break;
+        case 'ArrowRight': // Right Arrow to forward
+            audio.currentTime += 10;
+            break;
+        case 'ArrowLeft': // Left Arrow to rewind
+            audio.currentTime -= 10;
+            break;
+    }
+});

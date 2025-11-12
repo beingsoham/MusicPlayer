@@ -14,6 +14,9 @@
         <!-- Left Sidebar: Navigation -->
         <div class="sidebar" id="sidebar">
             <ul class="nav-menu">
+                <li class="sidebar-header-mobile">
+                    <button class="action-btn" id="close-sidebar-btn"><i class="fas fa-times"></i></button>
+                </li>
                 <li><a href="#" id="home-btn"><i class="fas fa-home"></i> Home</a></li>
                 <li><a href="#" id="browse-btn"><i class="fas fa-compass"></i> Browse</a></li>
                 <li><a href="#"><i class="fas fa-book-open"></i> Library</a></li>
@@ -29,6 +32,7 @@
             <!-- Library View (Song Grid) - Initially hidden -->
             <div class="library-view" id="library-view">
                 <div class="main-header">
+                    <button class="action-btn" id="burger-menu"><i class="fas fa-bars"></i></button>
                     <div class="search-container">
                         <i class="fas fa-search search-icon"></i>
                         <input type="text" id="search-input" placeholder="Search for songs or artists...">
@@ -96,9 +100,6 @@
         <!-- Hidden audio element -->
         <audio src="" id="audio"></audio>
 
-        <!-- Mobile controls (optional, for future use) -->
-        <button class="action-btn" id="burger-menu"><i class="fas fa-bars"></i></button>
-        <button class="action-btn" id="close-sidebar-btn"><i class="fas fa-times"></i></button>
     </div>
 
     <script src="script.js"></script>

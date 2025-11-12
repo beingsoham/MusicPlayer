@@ -130,6 +130,7 @@ body {
 
 .main-header {
     display: flex;
+    align-items: center;
     justify-content: center;
     width: 100%;
     margin-bottom: 20px;
@@ -293,12 +294,24 @@ body {
         transform: translateX(0);
     }
 
+    .sidebar-header-mobile {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 15px;
+    }
+
     #burger-menu {
         display: block;
+        position: absolute;
+        left: 15px;
+        top: 15px;
+        z-index: 10;
+        font-size: 20px;
     }
 
     #close-sidebar-btn {
         display: block;
+        font-size: 20px;
     }
 
     .right-sidebar {
@@ -307,6 +320,7 @@ body {
 
     .main-content {
         padding: 15px;
+        padding-top: 60px; /* Add space for the burger menu */
     }
 
     /* --- Mobile: Now Playing View Adjustments --- */
