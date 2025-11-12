@@ -1,4 +1,4 @@
-const musicContainer = document.getElementById('music-container'); // This is now player-container
+const musicContainer = document.getElementById('now-playing-view');
 const playBtn = document.getElementById('play');
 const prevBtn = document.getElementById('prev');
 const nextBtn = document.getElementById('next');
@@ -8,11 +8,17 @@ const progress = document.getElementById('progress');
 const progressContainer = document.getElementById('progress-container');
 const title = document.getElementById('title');
 const cover = document.getElementById('cover');
-const volumeSlider = document.getElementById('volume-slider');
 const artist = document.getElementById('artist');
-const songGrid = document.getElementById('song-grid');
-const playlist = document.getElementById('playlist');
 const favBtn = document.getElementById('fav-btn');
+const loopBtn = document.getElementById('loop-btn');
+const volumeSlider = document.getElementById('volume-slider');
+const searchInput = document.getElementById('search-input');
+const playlist = document.getElementById('playlist'); // The queue on the right
+const songGrid = document.getElementById('song-grid'); // The library grid
+
+// View containers
+const libraryView = document.getElementById('library-view');
+const nowPlayingView = document.getElementById('now-playing-view');
 
 // For sidebar on mobile
 const burgerMenu = document.getElementById('burger-menu');
@@ -38,6 +44,13 @@ const songs = [
         title: 'Haseen',
         artist: 'Talwinder',
         favorite: true
+    },
+    {
+        name: 'pyari-amaanat',
+        image: 'pyari-amaanat.png',
+        title: 'Pyari Amaanat',
+        artist: 'Arpit Bala',
+        favorite: false
     }
 ]; // Example songs
 
@@ -45,22 +58,50 @@ const songs = [
 let songIndex = 0; // Start with the first song
 
 // Initially load song details into DOM
-createPlaylist();
+updatePlaylist(songs);
 createSongCards();
 loadSong(songs[songIndex]);
+showNowPlayingView(); // Start by showing the player
 
-// Create playlist in the sidebar
-function createPlaylist() {
+// Update playlist/queue in the right sidebar
+function updatePlaylist(songsToShow) {
     playlist.innerHTML = ''; // Clear existing playlist
-    songs.forEach((song, index) => {
+    songsToShow.forEach((song, index) => {
         const li = document.createElement('li');
-        li.dataset.index = index;
+        li.dataset.index = songs.findIndex(s => s.name === song.name); // Use original index
         li.innerText = `${song.title} - ${song.artist}`;
         playlist.appendChild(li);
     });
 }
 
-// Create song cards in the main content area
+// Update song details
+function loadSong(songData) {
+    title.innerText = songData.title;
+    artist.innerText = songData.artist;
+    audio.src = `music/${songData.name}.mp3`;
+    cover.src = `images/${songData.image}`;
+
+    // Update favorite button UI
+    if (favBtn) {
+        const heartIcon = favBtn.querySelector('i');
+        if (songData.favorite) {
+            heartIcon.classList.remove('far'); // 'far' is regular
+            heartIcon.classList.add('fas');   // 'fas' is solid
+        } else {
+            heartIcon.classList.remove('fas');
+            heartIcon.classList.add('far');
+        }
+    }
+
+    // Highlight the current song in the playlist
+    const currentPlaying = document.querySelector('.playlist li.playing');
+    if (currentPlaying) {
+        currentPlaying.classList.remove('playing');
+    }
+    document.querySelector(`.playlist li[data-index="${songIndex}"]`).classList.add('playing');
+}
+
+// Create song cards in the library view
 function createSongCards() {
     songGrid.innerHTML = ''; // Clear existing cards
     songs.forEach((song, index) => {
@@ -78,31 +119,30 @@ function createSongCards() {
     });
 }
 
-
-// Update song details
-function loadSong(songData) {
-    title.innerText = songData.title;
-    artist.innerText = songData.artist;
-    audio.src = `music/${songData.name}.mp3`;
-    cover.src = `images/${songData.image}`;
-
-    // Update favorite button UI
-    const heartIcon = favBtn.querySelector('i');
-    if (songData.favorite) {
-        heartIcon.classList.remove('far'); // 'far' is regular
-        heartIcon.classList.add('fas');   // 'fas' is solid
-    } else {
-        heartIcon.classList.remove('fas');
-        heartIcon.classList.add('far');
-    }
-
-    // Highlight the current song in the playlist
-    const currentPlaying = document.querySelector('.playlist li.playing');
-    if (currentPlaying) {
-        currentPlaying.classList.remove('playing');
-    }
-    document.querySelector(`.playlist li[data-index="${songIndex}"]`).classList.add('playing');
+// --- View Management ---
+function showLibraryView() {
+    libraryView.classList.remove('hidden');
+    nowPlayingView.classList.add('hidden');
 }
+
+function showNowPlayingView() {
+    libraryView.classList.add('hidden');
+    nowPlayingView.classList.remove('hidden');
+}
+
+// Event listener for the Home button
+document.getElementById('home-btn').addEventListener('click', (e) => {
+    e.preventDefault(); // Prevent link from navigating
+    showLibraryView();
+});
+
+// Event listener for the Browse button
+document.getElementById('browse-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    showLibraryView();
+    searchInput.focus(); // Focus the search bar
+});
+
 
 // Play song
 function playSong() {
@@ -181,13 +221,14 @@ favBtn.addEventListener('click', () => {
     heartIcon.classList.toggle('far');
 });
 
-// Play song from main grid on click
+// Play song from library grid on click
 songGrid.addEventListener('click', (e) => {
     const card = e.target.closest('.song-card');
     if (card) {
         songIndex = parseInt(card.dataset.index);
         loadSong(songs[songIndex]);
         playSong();
+        showNowPlayingView(); // Switch back to the player view
     }
 });
 
@@ -201,6 +242,17 @@ playlist.addEventListener('click', (e) => {
             sidebar.classList.remove('show'); // Hide sidebar on mobile after selection
         }
     }
+});
+
+// Search functionality
+searchInput.addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    const filteredSongs = songs.filter(song => {
+        return song.title.toLowerCase().includes(searchTerm) ||
+               song.artist.toLowerCase().includes(searchTerm);
+    });
+    // Update the "Up Next" queue with search results
+    updatePlaylist(filteredSongs);
 });
 
 // Sidebar mobile functionality
@@ -224,4 +276,15 @@ audio.addEventListener('ended', nextSong);
 // Volume control
 volumeSlider.addEventListener('input', (e) => {
     audio.volume = e.target.value;
+});
+
+// Loop functionality
+loopBtn.addEventListener('click', () => {
+    audio.loop = !audio.loop;
+    // Visually indicate if loop is active
+    if (audio.loop) {
+        loopBtn.style.color = '#1db954'; // Spotify Green
+    } else {
+        loopBtn.style.color = '#b3b3b3'; // Default color
+    }
 });
