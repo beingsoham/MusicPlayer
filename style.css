@@ -309,6 +309,40 @@ body {
         padding: 15px;
     }
 
+    /* --- Mobile: Now Playing View Adjustments --- */
+    .now-playing-view {
+        justify-content: space-around; /* Better vertical spacing */
+        height: 100%;
+    }
+
+    .now-playing-info {
+        max-width: 90%; /* Use percentage for smaller screens */
+        padding: 10px 15px;
+    }
+
+    .now-playing-info h2 {
+        font-size: 20px; /* Slightly smaller title */
+    }
+
+    .img-container {
+        max-width: 75vw; /* Use viewport width for responsive size */
+        margin: 10px 0;
+    }
+
+    .player-controls {
+        max-width: 100%;
+    }
+
+    .action-btn {
+        margin: 0 10px; /* Reduce space between buttons */
+    }
+
+    .volume-container {
+        display: none; /* Hide volume slider on mobile to save space */
+    }
+
+    /* --- Mobile: Library View Adjustments --- */
+
     .song-grid {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
         gap: 16px;
